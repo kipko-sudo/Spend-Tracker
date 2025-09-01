@@ -1,0 +1,2 @@
+Spend Tracker is a simple and intuitive app designed to help you take control of your finances. With it, you can easily record your daily expenses and income, categorize your spending, and track where your money goes. The app generates a clear overview of your spending habits versus your income, giving you valuable insights into your financial health. Whether you’re budgeting, saving, or just curious about your money flow, Spend Tracker helps you stay on top of your finances with ease.
+

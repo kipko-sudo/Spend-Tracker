@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Budgets - SpendWise{% endblock %}
+
+{% block page_title %}Budgets{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>Budget Management</h3>
+    <div>
+        <a href="{% url 'add_budget' %}" class="btn btn-primary me-2">
+            <i class="fas fa-plus"></i> Add Budget
+        </a>
+        <a href="{% url 'income_list' %}" class="btn btn-outline">
+            <i class="fas fa-money-bill-wave"></i> Expected Income
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Your Budgets</h3>
+    </div>
+    <div class="card-body">
+        {% if budgets %}
+        <div class="table-container">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Period</th>
+                        <th class="text-right">Amount</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for budget in budgets %}
+                    <tr>
+                        <td>{{ budget.category.name }}</td>
+                        <td>{{ budget.get_period_display }}</td>
+                        <td class="text-right">${{ budget.amount|floatformat:2 }}</td>
+                        <td>
+                            <div class="table-actions">
+                                <a href="{% url 'edit_budget' budget.id %}" class="btn btn-sm btn-outline">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'delete_budget' budget.id %}" class="btn btn-sm btn-outline text-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+            <h4>No budgets found</h4>
+            <p class="text-muted">Set up budgets to help manage your spending.</p>
+            <a href="{% url 'add_budget' %}" class="btn btn-primary mt-2">
+                <i class="fas fa-plus"></i> Add Budget
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

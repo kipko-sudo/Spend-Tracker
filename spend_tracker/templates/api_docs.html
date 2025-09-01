@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+
+{% block title %}API Documentation - SpendWise{% endblock %}
+
+{% block page_title %}API Documentation{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">SpendWise API Documentation</h3>
+    </div>
+    <div class="card-body">
+        <h4 class="mb-3">Authentication</h4>
+        <p>All API requests require authentication. You can authenticate using token authentication or session authentication.</p>
+        
+        <h5 class="mt-4">Token Authentication</h5>
+        <p>To use token authentication, include the token in the Authorization header:</p>
+        <pre class="bg-light p-3 rounded"><code>Authorization: Token your-token-here</code></pre>
+        
+        <h5 class="mt-4">Session Authentication</h5>
+        <p>If you're accessing the API from a browser, you can use session authentication by logging in through the browser.</p>
+        
+        <h4 class="mt-5 mb-3">API Endpoints</h4>
+        
+        <div class="endpoint-section mb-4">
+            <h5>User Endpoints</h5>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Endpoint</th>
+                        <th>Method</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>/api/users/</code></td>
+                        <td>GET</td>
+                        <td>List users (admin or family head only)</td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/users/me/</code></td>
+                        <td>GET</td>
+                        <td>Get current user profile</td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/users/stats/</code></td>
+                        <td>GET</td>
+                        <td>Get current user financial statistics</td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/preferences/</code></td>
+                        <td>GET, POST</td>
+                        <td>List and create user preferences</td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/preferences/{id}/</code></td>
+                        <td>GET, PUT, PATCH, DELETE</td>
+                        <td>Retrieve, update or delete user preference</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="endpoint-section mb-4">
+            <h5>Transaction Endpoints</h5>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Endpoint</th>
+                        <th>Method</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>/api/transactions/</code></td>
+                        <td>GET, POST</td>
+                        <td>List and create transactions</td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/transactions/{id}/</code></td>
+                        <td>GET, PUT, PATCH, DELETE</td>
+                        <td>Retrieve, update or delete transaction</td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/transactions/summary/</code></td>
+                        <td>GET</td>
+                        <td>Get transaction summary</td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/categories/</code></td>
+                        <td>GET, POST</td>
+                        <td>List and create categories</td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/categories/{id}/</code></td>
+                        <td>GET, PUT, PATCH, DELETE</td>
+                        <td>Retrieve, update or delete category</td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/categories/income/</code></td>
+                        <td>GET</td>
+                        <td>List income categories</td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/categories/expense/</code></td>
+                        <td>GET</td>
+                        <td>List expense categories</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="endpoint-section mb-4">
+            <h5>Budget Endpoints</h5>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Endpoint</th>
+                        <th>Method</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>/api/budgets/</code></td>
+                        <td>GET, POST</td>
+                        <td>List and create budgets</td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/budgets/{id}/</code></td>
+                        <td>GET, PUT, PATCH, DELETE</td>
+                        <td>Retrieve, update or delete budget</td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/budgets/progress/</code></td>
+                        <td>GET</td>
+                        <td>Get budget progress</td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/incomes/</code></td>
+                        <td>GET, POST</td>
+                        <td>List and create expected incomes</td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/incomes/{id}/</code></td>
+                        <td>GET, PUT, PATCH, DELETE</td>
+                        <td>Retrieve, update or delete expected income</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="endpoint-section mb-4">
+            <h5>Report Endpoints</h5>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Endpoint</th>
+                        <th>Method</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>/api/reports/</code></td>
+                        <td>GET, POST</td>
+                        <td>List and create reports</td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/reports/{id}/</code></td>
+                        <td>GET, DELETE</td>
+                        <td>Retrieve or delete report</td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/reports/generate/</code></td>
+                        <td>GET</td>
+                        <td>Generate a new report</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <h4 class="mt-5 mb-3">Query Parameters</h4>
+        <p>Many endpoints support filtering, searching, and pagination:</p>
+        
+        <h5 class="mt-4">Filtering</h5>
+        <p>For transactions, you can filter by date range, category, and transaction type:</p>
+        <pre class="bg-light p-3 rounded"><code>/api/transactions/?start_date=2023-01-01&end_date=2023-01-31&category=1&type=expense</code></pre>
+        
+        <h5 class="mt-4">Searching</h5>
+        <p>You can search in supported fields using the search parameter:</p>
+        <pre class="bg-light p-3 rounded"><code>/api/transactions/?search=groceries</code></pre>
+        
+        <h5 class="mt-4">Ordering</h5>
+        <p>You can order results using the ordering parameter:</p>
+        <pre class="bg-light p-3 rounded"><code>/api/transactions/?ordering=-date</code></pre>
+        <p>Use a minus sign (-) to indicate descending order.</p>
+        
+        <h5 class="mt-4">Pagination</h5>
+        <p>Results are paginated by default. You can navigate pages using the page parameter:</p>
+        <pre class="bg-light p-3 rounded"><code>/api/transactions/?page=2</code></pre>
+        
+        <h4 class="mt-5 mb-3">Example API Requests</h4>
+        
+        <h5 class="mt-4">Creating a Transaction</h5>
+        <pre class="bg-light p-3 rounded"><code>POST /api/transactions/
+Content-Type: application/json
+Authorization: Token your-token-here
+
+{
+    "amount": "50.00",
+    "category": 1,
+    "description": "Grocery shopping",
+    "date": "2023-06-15"
+}</code></pre>
+        
+        <h5 class="mt-4">Getting Transaction Summary</h5>
+        <pre class="bg-light p-3 rounded"><code>GET /api/transactions/summary/
+Authorization: Token your-token-here</code></pre>
+        
+        <h5 class="mt-4">Generating a Report</h5>
+        <pre class="bg-light p-3 rounded"><code>GET /api/reports/generate/?report_type=monthly
+Authorization: Token your-token-here</code></pre>
+    </div>
+</div>
+{% endblock %}

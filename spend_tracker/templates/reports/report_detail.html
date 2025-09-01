@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}Report Details - SpendWise{% endblock %}
+
+{% block page_title %}Report Details{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>{{ report.get_report_type_display }} Report</h3>
+    <a href="{% url 'report_list' %}" class="btn btn-outline">
+        <i class="fas fa-arrow-left"></i> Back to Reports
+    </a>
+</div>
+
+<div class="summary-cards">
+    <div class="summary-card">
+        <div class="summary-card-icon" style="background-color: rgba(76, 175, 80, 0.1); color: #4caf50;">
+            <i class="fas fa-arrow-down"></i>
+        </div>
+        <div class="summary-card-content">
+            <div class="summary-card-label">Total Income</div>
+            <div class="summary-card-value">${{ report.total_income|floatformat:2 }}</div>
+        </div>
+    </div>
+    
+    <div class="summary-card">
+        <div class="summary-card-icon" style="background-color: rgba(244, 67, 54, 0.1); color: #f44336;">
+            <i class="fas fa-arrow-up"></i>
+        </div>
+        <div class="summary-card-content">
+            <div class="summary-card-label">Total Expenses</div>
+            <div class="summary-card-value">${{ report.total_expense|floatformat:2 }}</div>
+        </div>
+    </div>
+    
+    <div class="summary-card">
+        <div class="summary-card-icon" style="background-color: rgba(33, 150, 243, 0.1); color: #2196f3;">
+            <i class="fas fa-calculator"></i>
+        </div>
+        <div class="summary-card-content">
+            <div class="summary-card-label">Net Amount</div>
+            <div class="summary-card-value {% if report.net_amount >= 0 %}text-success{% else %}text-danger{% endif %}">
+                ${{ report.net_amount|floatformat:2 }}
+            </div>
+        </div>
+    </div>
+    
+    <div class="summary-card">
+        <div class="summary-card-icon" style="background-color: rgba(156, 39, 176, 0.1); color: #9c27b0;">
+            <i class="fas fa-calendar-alt"></i>
+        </div>
+        <div class="summary-card-content">
+            <div class="summary-card-label">Period</div>
+            <div class="summary-card-value">{{ report.start_date|date:"M d" }} - {{ report.end_date|date:"M d, Y" }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+    <!-- Income Categories -->
+    <div class="grid-col-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Income Categories</h3>
+            </div>
+            <div class="card-body">
+                {% if income_data.labels %}
+                <div class="chart-container">
+                    <canvas id="incomeChart"></canvas>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <p>No income data available for this period.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Expense Categories -->
+    <div class="grid-col-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Expense Categories</h3>
+            </div>
+            <div class="card-body">
+                {% if expense_data.labels %}
+                <div class="chart-container">
+                    <canvas id="expenseChart"></canvas>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <p>No expense data available for this period.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Category Details -->
+    <div class="grid-col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Category Details</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Type</th>
+                                <th class="text-right">Amount</th>
+                                <th class="text-right">% of Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category in categories %}
+                            <tr>
+                                <td>{{ category.category_name }}</td>
+                                <td>
+                                    <span class="badge {% if category.transaction_type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
+                                        {{ category.transaction_type|title }}
+                                    </span>
+                                </td>
+                                <td class="text-right">${{ category.amount|floatformat:2 }}</td>
+                                <td class="text-right">
+                                    {% if category.transaction_type == 'income' %}
+                                        {{ category.amount|div:report.total_income|mul:100|floatformat:1 }}%
+                                    {% else %}
+                                        {{ category.amount|div:report.total_expense|mul:100|floatformat:1 }}%
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if income_data.labels %}
+        // Income Chart
+        const incomeCtx = document.getElementById('incomeChart').getContext('2d');
+        const incomeData = {
+            labels: {{ income_data.labels|safe }},
+            datasets: [{
+                data: {{ income_data.values|safe }},
+                backgroundColor: [
+                    'rgba(76, 175, 80, 0.7)',
+                    'rgba(33, 150, 243, 0.7)',
+                    'rgba(255, 193, 7, 0.7)',
+                    'rgba(156, 39, 176, 0.7)',
+                    'rgba(255, 87, 34, 0.7)',
+                    'rgba(0, 188, 212, 0.7)',
+                    'rgba(63, 81, 181, 0.7)',
+                    'rgba(233, 30, 99, 0.7)'
+                ],
+                borderWidth: 1
+            }]
+        };
+        
+        new Chart(incomeCtx, {
+            type: 'pie',
+            data: incomeData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((value / total) * 100);
+                                return `${label}: $${value.toFixed(2)} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        {% endif %}
+        
+        {% if expense_data.labels %}
+        // Expense Chart
+        const expenseCtx = document.getElementById('expenseChart').getContext('2d');
+        const expenseData = {
+            labels: {{ expense_data.labels|safe }},
+            datasets: [{
+                data: {{ expense_data.values|safe }},
+                backgroundColor: [
+                    'rgba(244, 67, 54, 0.7)',
+                    'rgba(255, 152, 0, 0.7)',
+                    'rgba(255, 193, 7, 0.7)',
+                    'rgba(76, 175, 80, 0.7)',
+                    'rgba(33, 150, 243, 0.7)',
+                    'rgba(156, 39, 176, 0.7)',
+                    'rgba(0, 188, 212, 0.7)',
+                    'rgba(96, 125, 139, 0.7)'
+                ],
+                borderWidth: 1
+            }]
+        };
+        
+        new Chart(expenseCtx, {
+            type: 'doughnut',
+            data: expenseData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((value / total) * 100);
+                                return `${label}: $${value.toFixed(2)} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        {% endif %}
+    });
+</script>
+{% endblock %}

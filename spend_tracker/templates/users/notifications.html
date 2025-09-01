@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifications - SpendWise{% endblock %}
+
+{% block page_title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="card-title">Your Notifications</h3>
+        <div class="card-actions">
+            {% if notifications %}
+            <a href="?mark_all_read=1" class="btn btn-outline">
+                <i class="fas fa-check-double"></i> Mark All as Read
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        {% if notifications %}
+            <div class="notifications-list">
+                {% for notification in notifications %}
+                    <div class="notification-item {% if not notification.is_read %}unread{% endif %}">
+                        <div class="notification-icon {{ notification.notification_type }}">
+                            {% if notification.notification_type == 'info' %}
+                                <i class="fas fa-info"></i>
+                            {% elif notification.notification_type == 'success' %}
+                                <i class="fas fa-check"></i>
+                            {% elif notification.notification_type == 'warning' %}
+                                <i class="fas fa-exclamation"></i>
+                            {% elif notification.notification_type == 'danger' %}
+                                <i class="fas fa-exclamation-triangle"></i>
+                            {% endif %}
+                        </div>
+                        <div class="notification-content">
+                            <h4 class="notification-title">{{ notification.title }}</h4>
+                            <p class="notification-text">{{ notification.message }}</p>
+                            <div class="notification-meta">
+                                <span class="notification-time">{{ notification.created_at|date:"F d, Y H:i" }}</span>
+                            </div>
+                        </div>
+                        <div class="notification-actions">
+                            {% if not notification.is_read %}
+                                <a href="?mark_read={{ notification.id }}" class="btn btn-sm btn-outline" title="Mark as Read">
+                                    <i class="fas fa-check"></i>
+                                </a>
+                            {% endif %}
+                            <a href="?delete={{ notification.id }}" class="btn btn-sm btn-outline text-danger" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
+                <h4>No notifications</h4>
+                <p class="text-muted">You don't have any notifications at the moment.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    .notifications-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .notification-item {
+        display: flex;
+        align-items: flex-start;
+        padding: 15px;
+        border-radius: var(--border-radius);
+        background-color: var(--card-color);
+        border: 1px solid var(--border-color);
+        transition: var(--transition-fast);
+    }
+    
+    .notification-item:hover {
+        box-shadow: var(--box-shadow-hover);
+    }
+    
+    .notification-item.unread {
+        border-left: 3px solid var(--primary-color);
+        background-color: rgba(44, 110, 73, 0.05);
+    }
+    
+    .notification-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+    
+    .notification-icon.info {
+        background-color: rgba(33, 150, 243, 0.1);
+        color: var(--info-color);
+    }
+    
+    .notification-icon.success {
+        background-color: rgba(76, 175, 80, 0.1);
+        color: var(--success-color);
+    }
+    
+    .notification-icon.warning {
+        background-color: rgba(255, 152, 0, 0.1);
+        color: var(--warning-color);
+    }
+    
+    .notification-icon.danger {
+        background-color: rgba(244, 67, 54, 0.1);
+        color: var(--danger-color);
+    }
+    
+    .notification-content {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .notification-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    
+    .notification-text {
+        font-size: 0.9rem;
+        color: var(--text-light);
+        margin-bottom: 8px;
+    }
+    
+    .notification-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .notification-time {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+    
+    .notification-actions {
+        display: flex;
+        gap: 5px;
+        margin-left: 10px;
+    }
+</style>
+{% endblock %}

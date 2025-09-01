@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Generate Report - SpendWise{% endblock %}
+
+{% block page_title %}Generate Report{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Generate Financial Report</h3>
+    </div>
+    <div class="card-body">
+        <form method="post" class="form-container">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label class="form-label">Report Type</label>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" name="report_type" id="report_type_weekly" value="weekly" checked>
+                    <label class="form-check-label" for="report_type_weekly">
+                        Weekly Report (Last 7 days)
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="report_type" id="report_type_monthly" value="monthly">
+                    <label class="form-check-label" for="report_type_monthly">
+                        Monthly Report (Last 30 days)
+                    </label>
+                </div>
+            </div>
+            
+            <div class="alert alert-info mb-4">
+                <i class="fas fa-info-circle me-2"></i>
+                <span>The report will include all transactions from the selected period, categorized by income and expense categories.</span>
+            </div>
+            
+            <div class="d-flex justify-content-end mt-4">
+                <a href="{% url 'report_list' %}" class="btn btn-outline me-2">Cancel</a>
+                <button type="submit" class="btn btn-primary">Generate Report</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

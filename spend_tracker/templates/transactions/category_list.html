@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Categories - SpendWise{% endblock %}
+
+{% block page_title %}Categories{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>Categories</h3>
+    <a href="{% url 'add_category' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add Category
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">All Categories</h3>
+    </div>
+    <div class="card-body">
+        {% if categories %}
+        <div class="table-container">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                    <tr>
+                        <td>{{ category.name }}</td>
+                        <td>
+                            <span class="badge {% if category.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
+                                {{ category.get_type_display }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if category.is_default %}
+                            <span class="badge bg-info">Default</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                {% if not category.is_default %}
+                                <a href="#" class="btn btn-sm btn-outline">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-tags fa-3x text-muted mb-3"></i>
+            <h4>No categories found</h4>
+            <p class="text-muted">Create categories to organize your transactions.</p>
+            <a href="{% url 'add_category' %}" class="btn btn-primary mt-2">
+                <i class="fas fa-plus"></i> Add Category
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

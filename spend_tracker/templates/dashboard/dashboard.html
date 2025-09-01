@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - SpendWise{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Summary Cards -->
+<div class="summary-cards">
+    <div class="summary-card">
+        <div class="summary-card-icon" style="background-color: rgba(76, 175, 80, 0.1); color: #4caf50;">
+            <i class="fas fa-arrow-down"></i>
+        </div>
+        <div class="summary-card-content">
+            <div class="summary-card-label">Month Income</div>
+            <div class="summary-card-value">Ksh.{{ month_income|floatformat:2 }}</div>
+            <div class="summary-card-trend {% if income_change >= 0 %}text-success{% else %}text-danger{% endif %}">
+                <i class="fas fa-{% if income_change >= 0 %}arrow-up{% else %}arrow-down{% endif %}"></i>
+                {{ income_change|floatformat:1 }}% from last month
+            </div>
+        </div>
+    </div>
+    
+    <div class="summary-card">
+        <div class="summary-card-icon" style="background-color: rgba(244, 67, 54, 0.1); color: #f44336;">
+            <i class="fas fa-arrow-up"></i>
+        </div>
+        <div class="summary-card-content">
+            <div class="summary-card-label">Month Expenses</div>
+            <div class="summary-card-value">Ksh.{{ month_expenses|floatformat:2 }}</div>
+            <div class="summary-card-trend {% if expense_change <= 0 %}text-success{% else %}text-danger{% endif %}">
+                <i class="fas fa-{% if expense_change <= 0 %}arrow-down{% else %}arrow-up{% endif %}"></i>
+                {{ expense_change|floatformat:1 }}% from last month
+            </div>
+        </div>
+    </div>
+    
+    <div class="summary-card">
+        <div class="summary-card-icon" style="background-color: rgba(33, 150, 243, 0.1); color: #2196f3;">
+            <i class="fas fa-piggy-bank"></i>
+        </div>
+        <div class="summary-card-content">
+            <div class="summary-card-label">Month Savings</div>
+            <div class="summary-card-value">Ksh.{{ month_savings|floatformat:2 }}</div>
+            <div class="summary-card-trend {% if savings_change >= 0 %}text-success{% else %}text-danger{% endif %}">
+                <i class="fas fa-{% if savings_change >= 0 %}arrow-up{% else %}arrow-down{% endif %}"></i>
+                {{ savings_change|floatformat:1 }}% from last month
+            </div>
+        </div>
+    </div>
+    
+    <div class="summary-card">
+        <div class="summary-card-icon" style="background-color: rgba(255, 193, 7, 0.1); color: #ffc107;">
+            <i class="fas fa-chart-pie"></i>
+        </div>
+        <div class="summary-card-content">
+            <div class="summary-card-label">Active Budgets</div>
+            <div class="summary-card-value">{{ budgets.count }}</div>
+            <div class="summary-card-trend">
+                <a href="{% url 'budget_list' %}" class="text-primary">View all budgets</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+    <!-- Recent Transactions -->
+    <div class="grid-col-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Recent Transactions</h3>
+                <a href="{% url 'transaction_list' %}" class="btn btn-sm btn-outline">View All</a>
+            </div>
+            <div class="card-body">
+                {% if recent_transactions %}
+                <div class="table-container">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th class="text-right">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for transaction in recent_transactions %}
+                            <tr>
+                                <td>{{ transaction.date|date:"M d" }}</td>
+                                <td>
+                                    {% if transaction.category %}
+                                    <span class="badge {% if transaction.category.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
+                                        {{ transaction.category.name }}
+                                    </span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Uncategorized</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ transaction.description|default:"--" }}</td>
+                                <td class="text-right {% if transaction.category.type == 'income' %}text-success{% else %}text-danger{% endif %}">
+                                    Ksh.{{ transaction.amount|floatformat:2 }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-exchange-alt fa-3x text-muted mb-3"></i>
+                    <h4>No recent transactions</h4>
+                    <p class="text-muted">Start tracking your finances by adding transactions.</p>
+                    <a href="{% url 'add_transaction' %}" class="btn btn-primary mt-2">
+                        <i class="fas fa-plus"></i> Add Transaction
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Top Expenses -->
+    <div class="grid-col-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Top Expense Categories</h3>
+            </div>
+            <div class="card-body">
+                {% if top_expenses %}
+                <div class="chart-container">
+                    <canvas id="expensePieChart"></canvas>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+                    <h4>No expense data</h4>
+                    <p class="text-muted">Add transactions to see your top expense categories.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Budget Progress -->
+    <div class="grid-col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Budget Progress</h3>
+                <a href="{% url 'budget_list' %}" class="btn btn-sm btn-outline">Manage Budgets</a>
+            </div>
+            <div class="card-body">
+                {% if budgets %}
+                <div class="budget-progress-container">
+                    {% for budget in budgets %}
+                    <div class="budget-item" id="budget-{{ budget.id }}">
+                        <div class="budget-info">
+                            <div class="budget-name">{{ budget.category.name }}</div>
+                            <div class="budget-period">{{ budget.get_period_display }}</div>
+                        </div>
+                        <div class="budget-progress">
+                            <div class="progress">
+                                <div class="progress-bar {% if budget.percentage >= 100 %}progress-bar-danger{% elif budget.percentage >= 75 %}progress-bar-warning{% else %}progress-bar-success{% endif %}" 
+                                     style="width: {{ budget.percentage|floatformat:0 }}%"></div>
+                            </div>
+                            <div class="budget-stats">
+                                <div class="budget-spent">Ksh.{{ budget.spent|floatformat:2 }} / Ksh.{{ budget.amount|floatformat:2 }}</div>
+                                <div class="budget-remaining">
+                                    <span class="percentage">{{ budget.percentage|floatformat:1 }}%</span>
+                                    <span class="remaining">Ksh.{{ budget.remaining|floatformat:2 }} left</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+                    <h4>No budgets found</h4>
+                    <p class="text-muted">Set up budgets to help manage your spending.</p>
+                    <a href="{% url 'add_budget' %}" class="btn btn-primary mt-2">
+                        <i class="fas fa-plus"></i> Add Budget
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Top Expenses Chart
+        {% if top_expenses %}
+        const expenseLabels = [{% for expense in top_expenses %}'{{ expense.category__name }}'{% if not forloop.last %}, {% endif %}{% endfor %}];
+        const expenseData = [{% for expense in top_expenses %}{{ expense.total }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+        
+        const expenseChartEl = document.getElementById('expensePieChart');
+        if (expenseChartEl) {
+            const ctx = expenseChartEl.getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: expenseLabels,
+                    datasets: [{
+                        data: expenseData,
+                        backgroundColor: [
+                            '#4caf50', // Green
+                            '#2196f3', // Blue
+                            '#ff9800', // Orange
+                            '#9c27b0', // Purple
+                            '#f44336', // Red
+                            '#00bcd4', // Cyan
+                            '#3f51b5', // Indigo
+                            '#e91e63'  // Pink
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return label + ': Ksh.' + value.toFixed(2) + ' (' + percentage + '%)';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        {% endif %}
+    });
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .summary-card-trend {
+        font-size: 0.8rem;
+        margin-top: 5px;
+    }
+    
+    .budget-progress-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .budget-item {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .budget-info {
+        width: 150px;
+    }
+    
+    .budget-name {
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+    
+    .budget-period {
+        font-size: 0.8rem;
+        color: var(--text-light);
+    }
+    
+    .budget-progress {
+        flex: 1;
+    }
+    
+    .budget-stats {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 5px;
+        font-size: 0.85rem;
+    }
+    
+    .budget-spent {
+        color: var(--text-light);
+    }
+    
+    .budget-remaining {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .percentage {
+        font-weight: 500;
+    }
+    
+    .remaining {
+        color: var(--text-light);
+    }
+    
+    .badge {
+        padding: 5px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+    
+    .bg-success {
+        background-color: var(--success-color);
+        color: white;
+    }
+    
+    .bg-danger {
+        background-color: var(--danger-color);
+        color: white;
+    }
+    
+    .bg-secondary {
+        background-color: var(--text-light);
+        color: white;
+    }
+</style>
+{% endblock %}

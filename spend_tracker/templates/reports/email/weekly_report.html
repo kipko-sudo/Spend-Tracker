@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Your Weekly Spending Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c6e49;
+        }
+        .summary {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .summary-label {
+            font-weight: bold;
+        }
+        .income {
+            color: #4caf50;
+        }
+        .expense {
+            color: #f44336;
+        }
+        .net-positive {
+            color: #4caf50;
+        }
+        .net-negative {
+            color: #f44336;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #2c6e49;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">SpendWise</div>
+        <p>Your Weekly Spending Report</p>
+    </div>
+    
+    <p>Hello {{ user.username }},</p>
+    
+    <p>Here's your spending summary for the period {{ start_date|date:"M d" }} to {{ end_date|date:"M d, Y" }}.</p>
+    
+    <div class="summary">
+        <div class="summary-item">
+            <span class="summary-label">Total Income:</span>
+            <span class="income">${{ income_total|floatformat:2 }}</span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">Total Expenses:</span>
+            <span class="expense">${{ expense_total|floatformat:2 }}</span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">Net Amount:</span>
+            <span class="{% if net_amount >= 0 %}net-positive{% else %}net-negative{% endif %}">
+                ${{ net_amount|floatformat:2 }}
+            </span>
+        </div>
+    </div>
+    
+    <p>For a detailed breakdown of your spending, please visit your SpendWise dashboard.</p>
+    
+    <div style="text-align: center;">
+        <a href="http://localhost:8000/dashboard/" class="button">View Dashboard</a>
+    </div>
+    
+    <div class="footer">
+        <p>This is an automated email from SpendWise. Please do not reply to this email.</p>
+        <p>To change your email preferences, visit your <a href="http://localhost:8000/accounts/profile/">profile settings</a>.</p>
+    </div>
+</body>
+</html>

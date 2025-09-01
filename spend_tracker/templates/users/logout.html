@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Logged Out - SpendWise{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1 class="auth-title">Logged Out</h1>
+            <p class="auth-subtitle">You have been successfully logged out</p>
+        </div>
+        <div class="auth-body text-center">
+            <i class="fas fa-check-circle fa-4x text-success mb-4"></i>
+            <p class="mb-4">Thank you for using SpendWise. You have been successfully logged out of your account.</p>
+            <a href="{% url 'login' %}" class="btn btn-primary">Sign In Again</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    body {
+        background-color: var(--background-color);
+    }
+    
+    /* Hide sidebar and header on login/register pages */
+    .sidebar, .main-header, .main-footer {
+        display: none !important;
+    }
+    
+    /* Make the main content take full width */
+    .main-content {
+        margin-left: 0 !important;
+        padding-top: 0 !important;
+    }
+    
+    /* Ensure content wrapper takes full height */
+    .content-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Ensure the auth container is properly displayed */
+    .auth-container {
+        width: 100%;
+        padding: 20px;
+    }
+    
+    .auth-card {
+        box-shadow: var(--box-shadow);
+        max-width: 400px;
+        width: 100%;
+        margin: 0 auto;
+    }
+</style>
+{% endblock %}

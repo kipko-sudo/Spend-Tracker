@@ -1,0 +1,8 @@
+graph TD
+    A["Flutter Mobile App"] <-->|"REST API / JWT Auth"| B["Django Backend"]
+    B <--> C["PostgreSQL Database"]
+    B <--> D["Redis + Celery"]
+    D -->|"Weekly Reports"| E["Email Service"]
+    A -->|"Parse"| F["SMS Messages"]
+    B -->|"Generate"| G["Reports & Dashboards"]
+    H["Web Frontend"] <-->|"REST API / JWT Auth"| B
