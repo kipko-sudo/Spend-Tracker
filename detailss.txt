@@ -1,0 +1,35 @@
+spend tracker
+mobile
+web
+web apis for mobile app
+
+track income
+track outflow
+weekly reports
+
+mobile app should read the messages from providers to track inflow - allow user to enter these details when setting up app during first login
+it should also allows manual input by user based on categories
+
+web should generate reports and notify user weekly when spend report is available
+
+data dashboard in app and web
+
+animations in app and web
+
+authentication, username, password and a custom pin on app, google auth support
+
+provider for state management in mobile app, 
+
+mobile app - flutter
+web app -python, Django, html css
+
+set budgets, have a multiuser called family and a single user called individual in multiuser all members inflow and spend account for spend
+
+
+budgets can be set and fixed spends can be set to a monthly or weekly or daily
+
+user can also set a budget and estimate monthly inflows, user can be notified when they meet set budget or set expected incomes
+
+user can also get notifications when they are having  a good week
+
+a person while setting up the account will choose their currency
