@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'reports',
     'dashboard',
     # 'templatetags',
+    'wallet',
 ]
 
 MIDDLEWARE = [

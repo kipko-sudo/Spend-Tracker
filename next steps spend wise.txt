@@ -1,0 +1,5 @@
+Improve Spend Wise:
+1. onboarding to create custom categories
+2. explore Wise Wallet
+ - smart saving that adapts to your spending patterns
+3. Start the Spend Wise mobile application

@@ -22,23 +22,52 @@
                 {% csrf_token %}
                 
                 {% if form.non_field_errors %}
-                <div class="alert alert-danger mb-4">
-                    {% for error in form.non_field_errors %}
-                    <p class="mb-0">{{ error }}</p>
-                    {% endfor %}
+                <div class="error-banner alert alert-danger mb-4 d-flex align-items-center">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <div>
+                        {% for error in form.non_field_errors %}
+                        <p class="mb-0 fw-medium">{{ error }}</p>
+                        {% endfor %}
+                    </div>
                 </div>
                 {% endif %}
                 
                 <div class="form-group">
                     <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
-                    {{ form.username.errors }}
-                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div class="field-error-container mb-2">
+                            <div class="field-error d-flex align-items-center">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                <div>
+                                    {% for error in form.username.errors %}
+                                    <span class="error-text">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="input-wrapper">
+                        {{ form.username }}
+                    </div>
                 </div>
                 
                 <div class="form-group">
                     <label for="{{ form.password.id_for_label }}" class="form-label">Password</label>
-                    {{ form.password.errors }}
-                    {{ form.password }}
+                    {% if form.password.errors %}
+                        <div class="field-error-container mb-2">
+                            <div class="field-error d-flex align-items-center">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                <div>
+                                    {% for error in form.password.errors %}
+                                    <span class="error-text">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="input-wrapper">
+                        {{ form.password }}
+                    </div>
                 </div>
 
                 <div class="mb-4">
@@ -97,6 +126,99 @@
         max-width: 400px;
         width: 100%;
         margin: 0 auto;
+    }
+    
+    /* Error Banner Styling */
+    .error-banner {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        border: 1px solid #f87171;
+        border-radius: 8px;
+        color: #dc2626;
+        animation: slideInDown 0.3s ease-out;
+    }
+    
+    .error-banner i {
+        color: #dc2626;
+        font-size: 1.1rem;
+    }
+    
+    /* Field Error Styling */
+    .field-error-container {
+        animation: fadeInUp 0.3s ease-out;
+    }
+    
+    .field-error {
+        background: #fef2f2;
+        border: 1px solid #fca5a5;
+        border-radius: 6px;
+        padding: 8px 12px;
+        color: #dc2626;
+        font-size: 0.875rem;
+    }
+    
+    .field-error i {
+        color: #ef4444;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+    }
+    
+    .error-text {
+        font-weight: 500;
+        line-height: 1.4;
+    }
+    
+    /* Input Validation States */
+    .form-group:has(.field-error-container) .form-control,
+    .form-group:has(.field-error-container) .form-select {
+        border-color: #f87171 !important;
+        box-shadow: 0 0 0 0.2rem rgba(248, 113, 113, 0.25) !important;
+        background-color: #fef2f2;
+    }
+    
+    .form-group:has(.field-error-container) .form-control:focus,
+    .form-group:has(.field-error-container) .form-select:focus {
+        border-color: #ef4444 !important;
+        box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important;
+    }
+    
+    /* Input wrapper for better spacing */
+    .input-wrapper {
+        position: relative;
+    }
+    
+    /* Animations */
+    @keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(5px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 576px) {
+        .field-error {
+            font-size: 0.8rem;
+            padding: 6px 10px;
+        }
+        
+        .error-banner {
+            font-size: 0.875rem;
+        }
     }
 </style>
 {% endblock %}
