@@ -26,6 +26,119 @@
     <!-- Page-specific CSS -->
     {% block extra_css %}{% endblock %}
     
+    <!-- User menu dropdown styles -->
+    <style>
+        /* User menu dropdown styles */
+        .user-menu {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg-color, #ffffff);
+            border: 1px solid var(--border-color, #e5e7eb);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.2s ease-in-out;
+            z-index: 1000;
+            margin-bottom: 8px;
+        }
+        
+        .user-menu.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .user-menu ul {
+            list-style: none;
+            margin: 0;
+            padding: 8px 0;
+        }
+        
+        .user-menu li {
+            margin: 0;
+        }
+        
+        .user-menu li.divider {
+            height: 1px;
+            background: var(--border-color, #e5e7eb);
+            margin: 8px 0;
+        }
+        
+        .user-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: var(--text-color, #374151);
+            text-decoration: none;
+            transition: background-color 0.15s ease;
+        }
+        
+        .user-menu a:hover {
+            background-color: var(--hover-bg, #f3f4f6);
+        }
+        
+        .user-menu a.text-danger {
+            color: #dc2626;
+        }
+        
+        .user-menu a.text-danger:hover {
+            background-color: #fef2f2;
+        }
+        
+        /* Added styles for logout button to match link appearance */
+        .user-menu button.text-danger:hover {
+            background-color: #fef2f2 !important;
+        }
+        
+        .user-menu i {
+            margin-right: 8px;
+            width: 16px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            position: relative;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-top: 1px solid var(--border-color, #e5e7eb);
+        }
+        
+        .user-menu-trigger {
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: background-color 0.15s ease;
+        }
+        
+        .user-menu-trigger:hover {
+            background-color: var(--hover-bg, #f3f4f6);
+        }
+        
+        .user-menu-trigger i {
+            transition: transform 0.2s ease;
+        }
+        
+        .user-menu.open + .user-info .user-menu-trigger i {
+            transform: rotate(180deg);
+        }
+        
+        /* Dark theme support */
+        .dark-theme .user-menu {
+            --bg-color: #1f2937;
+            --border-color: #374151;
+            --text-color: #f9fafb;
+            --hover-bg: #374151;
+        }
+    </style>
+    
     {% block extra_head %}{% endblock %}
 </head>
 <body>
@@ -87,19 +200,6 @@
             
             <!-- Sidebar user info section -->
             <div class="sidebar-footer">
-                <div class="user-info">
-                    <a href="{% url 'profile' %}" class="user-avatar">
-                        <i class="fas fa-user"></i>
-                    </a>
-                    <div class="user-details">
-                        <p class="user-name">{{ request.user.username }}</p>
-                        <p class="user-role">{{ request.user.get_user_type_display }}</p>
-                    </div>
-                    <div class="user-menu-trigger" id="user-menu-trigger">
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                </div>
-                
                 <div class="user-menu" id="user-menu">
                     <ul>
                         <li>
@@ -116,12 +216,29 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="{% url 'logout' %}" class="text-danger">
-                                <i class="fas fa-sign-out-alt"></i>
-                                <span>Logout</span>
-                            </a>
+                            <!-- Changed logout from GET link to POST form for security -->
+                            <form method="post" action="{% url 'logout' %}" style="margin: 0;">
+                                {% csrf_token %}
+                                <button type="submit" class="text-danger" style="background: none; border: none; width: 100%; text-align: left; padding: 12px 16px; color: #dc2626; cursor: pointer; display: flex; align-items: center; transition: background-color 0.15s ease;">
+                                    <i class="fas fa-sign-out-alt" style="margin-right: 8px; width: 16px; text-align: center;"></i>
+                                    <span>Logout</span>
+                                </button>
+                            </form>
                         </li>
                     </ul>
+                </div>
+                
+                <div class="user-info">
+                    <a href="{% url 'profile' %}" class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    <div class="user-details">
+                        <p class="user-name">{{ request.user.username }}</p>
+                        <p class="user-role">{{ request.user.get_user_type_display }}</p>
+                    </div>
+                    <div class="user-menu-trigger" id="user-menu-trigger">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
                 </div>
             </div>
         </aside>
