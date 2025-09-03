@@ -5,9 +5,17 @@
 {% block content %}
 <div class="auth-container">
     <div class="auth-card">
-        <div class="auth-header">
-            <h1 class="auth-title">Welcome Back</h1>
-            <p class="auth-subtitle">Sign in to continue to SpendWise</p>
+        <div class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
+            <div class="sidebar-header">
+                <div class="logo-container d-flex align-items-center gap-0">
+                    <i class="fas fa-wallet logo-icon fs-3"></i>
+                    <h1 class="logo-text mb-0 fs-2">SpendWise</h1>
+                </div>
+            </div>
+            <div class="auth-header text-center">
+                <h1 class="auth-title mb-0 fs-3">Welcome Back</h1>
+                <p class="auth-subtitle mb-0 mt-2">Sign in to continue</p>
+            </div>
         </div>
         <div class="auth-body">
             <form method="post" class="auth-form">
@@ -32,13 +40,15 @@
                     {{ form.password.errors }}
                     {{ form.password }}
                 </div>
-                
-                <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <div class="mb-4">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="remember-me">
-                        <label class="form-check-label" for="remember-me">Remember me</label>
+                        <input class="form-check-input" type="checkbox" id="remember-me" name="remember">
+                        <label class="form-check-label" for="remember-me">Keep me signed in</label>
                     </div>
-                    <a href="#" class="text-primary">Forgot password?</a>
+                    <div>
+                        <a href="/forgot-password" class="text-primary" aria-label="Recover your account password">Forgot password?</a>
+                    </div>
                 </div>
                 
                 <button type="submit" class="btn btn-primary w-100">Sign In</button>
