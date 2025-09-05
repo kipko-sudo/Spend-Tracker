@@ -38,7 +38,7 @@
                     <tr>
                         <td>{{ income.source }}</td>
                         <td>{{ income.get_period_display }}</td>
-                        <td class="text-right">${{ income.amount|floatformat:2 }}</td>
+                        <td class="text-right">Ksh.{{ income.amount|floatformat:2 }}</td>
                         <td>
                             <div class="table-actions">
                                 <a href="{% url 'edit_income' income.id %}" class="btn btn-sm btn-outline">

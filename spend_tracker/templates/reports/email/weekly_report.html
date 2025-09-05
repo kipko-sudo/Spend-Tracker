@@ -81,16 +81,16 @@
     <div class="summary">
         <div class="summary-item">
             <span class="summary-label">Total Income:</span>
-            <span class="income">${{ income_total|floatformat:2 }}</span>
+            <span class="income">Ksh.{{ income_total|floatformat:2 }}</span>
         </div>
         <div class="summary-item">
             <span class="summary-label">Total Expenses:</span>
-            <span class="expense">${{ expense_total|floatformat:2 }}</span>
+            <span class="expense">Ksh.{{ expense_total|floatformat:2 }}</span>
         </div>
         <div class="summary-item">
             <span class="summary-label">Net Amount:</span>
             <span class="{% if net_amount >= 0 %}net-positive{% else %}net-negative{% endif %}">
-                ${{ net_amount|floatformat:2 }}
+                Ksh.{{ net_amount|floatformat:2 }}
             </span>
         </div>
     </div>

@@ -20,7 +20,7 @@
         </div>
         <div class="summary-card-content">
             <div class="summary-card-label">Total Income</div>
-            <div class="summary-card-value">${{ report.total_income|floatformat:2 }}</div>
+            <div class="summary-card-value">Ksh.{{ report.total_income|floatformat:2 }}</div>
         </div>
     </div>
     
@@ -30,7 +30,7 @@
         </div>
         <div class="summary-card-content">
             <div class="summary-card-label">Total Expenses</div>
-            <div class="summary-card-value">${{ report.total_expense|floatformat:2 }}</div>
+            <div class="summary-card-value">Ksh.{{ report.total_expense|floatformat:2 }}</div>
         </div>
     </div>
     
@@ -41,7 +41,7 @@
         <div class="summary-card-content">
             <div class="summary-card-label">Net Amount</div>
             <div class="summary-card-value {% if report.net_amount >= 0 %}text-success{% else %}text-danger{% endif %}">
-                ${{ report.net_amount|floatformat:2 }}
+                Ksh.{{ report.net_amount|floatformat:2 }}
             </div>
         </div>
     </div>
@@ -124,7 +124,7 @@
                                         {{ category.transaction_type|title }}
                                     </span>
                                 </td>
-                                <td class="text-right">${{ category.amount|floatformat:2 }}</td>
+                                <td class="text-right">Ksh.{{ category.amount|floatformat:2 }}</td>
                                 <td class="text-right">
                                     {% if category.transaction_type == 'income' %}
                                         {{ category.amount|div:report.total_income|mul:100|floatformat:1 }}%
@@ -181,7 +181,7 @@
                                 const value = context.raw || 0;
                                 const total = context.dataset.data.reduce((a, b) => a + b, 0);
                                 const percentage = Math.round((value / total) * 100);
-                                return `${label}: $${value.toFixed(2)} (${percentage}%)`;
+                                return `Ksh.{label}: Ksh.Ksh.{value.toFixed(2)} (Ksh.{percentage}%)`;
                             }
                         }
                     }
@@ -225,7 +225,7 @@
                                 const value = context.raw || 0;
                                 const total = context.dataset.data.reduce((a, b) => a + b, 0);
                                 const percentage = Math.round((value / total) * 100);
-                                return `${label}: $${value.toFixed(2)} (${percentage}%)`;
+                                return `Ksh.{label}: Ksh.Ksh.{value.toFixed(2)} (Ksh.{percentage}%)`;
                             }
                         }
                     }
