@@ -38,7 +38,7 @@
                     <tr>
                         <td>{{ budget.category.name }}</td>
                         <td>{{ budget.get_period_display }}</td>
-                        <td class="text-right">${{ budget.amount|floatformat:2 }}</td>
+                        <td class="text-right">Ksh.{{ budget.amount|floatformat:2 }}</td>
                         <td>
                             <div class="table-actions">
                                 <a href="{% url 'edit_budget' budget.id %}" class="btn btn-sm btn-outline">
